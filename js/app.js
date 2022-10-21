@@ -23,6 +23,9 @@
 
   // We have to create a new todo document and enter it in the database
   function addTodo(text) {
+
+    if (text.length <= 0) return;
+
     var todo = {
       _id: new Date().toISOString(),
       title: text,
@@ -48,14 +51,18 @@
 
     db.allDocs({ include_docs: true, descending: false })
       .then( doc => {
-        console.log(doc);
+        //console.log(doc);
         redrawTodosUI(doc.rows);
       });
   }
 
   function checkboxChanged(todo, event) {
+    
+    //console.log(todo);
+    //console.log(event.target.checked);
+
     todo.completed = event.target.checked;
-    db.put(todo);
+    db.put(todo); //.then( console.log('registro actualizado') );
   }
 
   // User pressed the delete button for a todo, delete it
@@ -67,6 +74,9 @@
   // the new title or delete the todo if the title is empty
   function todoBlurred(todo, event) {
     var trimmedText = event.target.value.trim();
+
+    //if(trimmedText.length <= 0) return;
+
     if (!trimmedText) {
       db.remove(todo);
     } else {
